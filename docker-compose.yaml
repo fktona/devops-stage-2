@@ -4,8 +4,6 @@ services:
   frontend:
     build:
       context: ./frontend
-    environment:
-      VITE_API_URL: http://${DOMAIN}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
