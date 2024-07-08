@@ -1,4 +1,5 @@
 version: '3.7'
+# ADD YOUR DOMAIN AND EMAIL FOR LETSENCRYPT IN THE ENVIRONMENT FILE AT ROOT LEVEL
 
 services:
   frontend:
@@ -51,7 +52,7 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=adetona.fk@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.email=${EMAIL}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
