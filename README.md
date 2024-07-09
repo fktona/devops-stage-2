@@ -5,7 +5,7 @@ Welcome to the Full-Stack FastAPI and React template repository. This repository
 
 ---
 
-# My Full Stack Application
+
 
 This is a full stack web application that consists of a frontend built with Vite and a backend built with Python's FastAPI. The services are containerized using Docker and orchestrated using Docker Compose. 
 
@@ -179,82 +179,10 @@ CMD ["bash", "-c", "poetry run bash ./prestart.sh && poetry run uvicorn app.main
 
 ## Docker Compose Configuration
 
-The services are defined in the `docker-compose.yml` file as follows:
+The services are defined in the `docker-compose.yml` 
 
-```yaml
-version: '3.7'
 
-services:
-  frontend:
-    build:
-      context: ./frontend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
-
-  backend:
-    build:
-      context: ./backend
-    env_file: 
-      - ./backend/.env  
-    ports:
-      - "8000:8000"  
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))"
-      - "traefik.http.routers.backend.entrypoints=web"
-      - "traefik.http.services.backend.loadbalancer.server.port=8000"
-    depends_on:
-      - db
-
-  db:
-    image: postgres:13
-    env_file: 
-      - ./backend/.env
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080" 
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.adminer.rule=Host(`db.${DOMAIN}`)"
-      - "traefik.http.routers.adminer.entrypoints=web"
-      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
-
-  traefik:
-    image: traefik:latest
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=${EMAIL}"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8090:8090" 
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`proxy.${DOMAIN}`)"
-      - "traefik.http.routers.traefik.entrypoints=web"
-      - "traefik.http.services.traefik.loadbalancer.server.port=8080" 
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./letsencrypt:/letsencrypt
-
-volumes:
-  pgdata:
-  letsencrypt:
-```
-
+  
 ## Notes
 
 - Ensure that you replace `yourdomain.com` with your actual domain in the `.env` file and the Docker Compose labels.
